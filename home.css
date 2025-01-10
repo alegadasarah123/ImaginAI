@@ -1,0 +1,194 @@
+/* General Styles */
+body {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    background: #1b1b2f; /* Dark background */
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Header */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 0;
+}
+
+
+.logo {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #f5a623; /* Vibrant orange */
+}
+
+nav {
+    display: flex;
+    gap: 15px;
+}
+
+.btn {
+    display: inline-block;
+    background: transparent;
+    color: #f5a623;
+    text-decoration: none;
+    padding: 10px 20px;
+    border: 2px solid #f5a623;
+    border-radius: 30px;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    background: #f5a623;
+    color: #1b1b2f;
+    transform: scale(1.1);
+}
+
+.btn-primary {
+    background: #f5a623;
+    color: #1b1b2f;
+}
+
+.btn-primary:hover {
+    background: #d48819;
+}
+
+/* Hero Section */
+.hero {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 50px;
+    padding: 30px;
+    border-radius: 15px;
+    background: #222c41;
+    animation: fadeIn 1.5s ease-out;
+}
+
+.hero-content {
+    max-width: 600px;
+}
+
+.hero-title {
+    font-size: 2.8rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: #f5a623;
+}
+
+.hero-text {
+    font-size: 1.2rem;
+    margin-bottom: 30px;
+    color: #b1b1b1;
+}
+
+.hero-animation {
+    width: 400px;
+    height: 300px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.animation-box {
+    width: 100px;
+    height: 100px;
+    background: linear-gradient(45deg, #f5a623, #9f7aea, #63b3ed);
+    animation: rotateAnimation 3s linear infinite;
+    border-radius: 10px;
+}
+
+/* Features Section */
+.features {
+    margin-top: 50px;
+    text-align: center;
+}
+
+.features h2 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    color: #f5a623;
+}
+
+.features-grid {
+    display: flex;
+    justify-content: space-between;
+    gap: 30px;
+    margin-top: 30px;
+}
+
+.feature-card {
+    background: #2d3748;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.feature-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+}
+
+.icon {
+    font-size: 2rem;
+    margin-bottom: 10px;
+    color: #f5a623;
+}
+
+.feature-card h3 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+}
+
+.feature-card p {
+    font-size: 1rem;
+    color: #b1b1b1;
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 20px 0;
+    font-size: 0.9rem;
+    background: #222c41;
+    border-radius: 10px;
+    margin-top: 40px; 
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes rotateAnimation {
+    0% {
+        transform: rotate(0deg);
+    }
+    50% {
+        transform: rotate(180deg) scale(1.2);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}

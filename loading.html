@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ImaginAI</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: #1b1b2f;
+            font-family: 'Roboto', sans-serif;
+        }
+        .loading-container {
+            text-align: center;
+            animation: fadeIn 1.5s ease-out;
+        }
+        .logo {
+            width: 100px;
+            height: 100px;
+            background-color: #222c41;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 20px;
+            animation: pulse 2s infinite;
+        }
+        .logo-dot {
+            width: 20px;
+            height: 20px;
+            background-color: #f5a623;
+            border-radius: 50%;
+        }
+        .app-name {
+            color: #ffffff;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(245, 166, 35, 0.7);
+            }
+            70% {
+                transform: scale(1.1);
+                box-shadow: 0 0 0 10px rgba(245, 166, 35, 0);
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(245, 166, 35, 0);
+            }
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="loading-container">
+        <div class="logo">
+            <div class="logo-dot"></div>
+        </div>
+        <div class="app-name">ImaginAI</div>
+    </div>
+
+    <script>
+        // Redirect to homepage after 3 seconds
+        setTimeout(function() {
+            window.location.href = 'homepage.html';
+        }, 3000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ImaginAI</title>
+    <link rel="stylesheet" href="chatbot.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="header">
+        <h1 class="logo">ImaginAI</h1><br><br>
+        <button id="logout-button">Logout</button>
+    </div>
+    
+    <div class="chat-container">
+        <div class="chat-messages" id="chat-messages">
+            <div class="message bot-message">
+                <span class="typing-effect">Hi! I'm ImaginAI, your AI assistant ready to generate images. Please describe what you'd like to see!</span>
+            </div>
+        </div>
+        
+        <div class="input-container">
+            <input type="text" id="user-input" placeholder="Describe the image you want to generate...">
+            <button id="send-button">Generate</button>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <!-- Modal -->
+    <div class="modal" id="image-modal">
+        <span class="modal-close" id="modal-close">&times;</span>
+        <img id="modal-image" src="" alt="">
+        <div id="download-icon-container">
+            <i class="fas fa-download save-icon" title="Download Image" style="font-size: 24px; color: white; cursor: pointer;"></i>
+        </div>
+    </div>
+
+
+
+    <!-- Logout Confirmation Modal -->
+    <div id="logout-modal">
+        <div id="logout-modal-content">
+            <span id="logout-modal-close">&times;</span>
+            <h3>Are you sure you want to log out?</h3>
+            <button id="confirm-logout">Yes, Log Out</button>
+            <button id="cancel-logout">Cancel</button>
+        </div>
+    </div>
+
+    <script>
+
+
+        // Handle download icon click event
+        document.querySelector('.save-icon').addEventListener('click', (e) => {
+            e.preventDefault(); // Prevent any default behavior (in case)
+            const imageSrc = document.getElementById('modal-image').src;
+
+            // Create a link element to trigger the download
+            const link = document.createElement('a');
+            link.href = imageSrc;
+            link.download = 'generated_image.jpg'; // The default filename for the download
+            link.click(); // Trigger the download
+        });
+
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const typingEffect = document.querySelector('.typing-effect');
+
+            // Set a timeout to remove the blink animation after typing is complete
+            const typingDuration = 3000; // Match the duration of the 'typing' animation in milliseconds
+            setTimeout(() => {
+                typingEffect.style.animation = 'none'; // Stops all animations
+                typingEffect.style.borderRight = 'none'; // Removes the blinking cursor
+            }, typingDuration);
+        });
+
+        document.addEventListener("DOMContentLoaded", () => {
+    const chatMessages = document.getElementById('chat-messages');
+
+        // Function to dynamically adjust user message width
+        function adjustUserMessageWidth() {
+            const userMessages = document.querySelectorAll('.user-message');
+            userMessages.forEach(message => {
+                // Set the width dynamically based on text length
+                const textLength = message.textContent.length;
+                const minWidth = 50; // Minimum width for very short messages
+                const maxWidth = window.innerWidth * 0.6; // 60% of screen width
+                const calculatedWidth = Math.min(Math.max(textLength * 8, minWidth), maxWidth); // Dynamically adjust width
+                
+                message.style.width = `${calculatedWidth}px`;
+            });
+        }
+
+        // Adjust existing user messages on page load
+        adjustUserMessageWidth();
+
+        // Adjust new messages dynamically
+        const observer = new MutationObserver(() => {
+            adjustUserMessageWidth();
+        });
+
+        observer.observe(chatMessages, { childList: true, subtree: true });
+    });
+
+        // Logout modal logic
+        const logoutButton = document.getElementById('logout-button');
+        const logoutModal = document.getElementById('logout-modal');
+        const logoutModalClose = document.getElementById('logout-modal-close');
+        const confirmLogoutButton = document.getElementById('confirm-logout');
+        const cancelLogoutButton = document.getElementById('cancel-logout');
+
+        function showLogoutModal() {
+            logoutModal.style.display = 'flex';
+        }
+
+        function hideLogoutModal() {
+            logoutModal.style.display = 'none';
+        }
+
+        logoutButton.addEventListener('click', showLogoutModal);
+        logoutModalClose.addEventListener('click', hideLogoutModal);
+        cancelLogoutButton.addEventListener('click', hideLogoutModal);
+
+        confirmLogoutButton.addEventListener('click', () => {
+            window.location.href = 'login.html';
+        });
+
+        // Chat logic
+        const API_KEY = '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';
+        const MODEL_URL = 'https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-xl-base-1.0';
+        
+        const chatMessages = document.getElementById('chat-messages');
+        const userInput = document.getElementById('user-input');
+        const sendButton = document.getElementById('send-button');
+        const modal = document.getElementById('image-modal');
+        const modalImage = document.getElementById('modal-image');
+        const modalClose = document.getElementById('modal-close');
+        let isGenerating = false;
+
+        function addMessage(message, isUser) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
+            messageDiv.textContent = message;
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function addLoadingMessage() {
+            const loadingContainer = document.createElement('div');
+            loadingContainer.className = 'message bot-message loading-container';
+
+            const loadingDiv = document.createElement('div');
+            loadingDiv.className = 'loading';
+            loadingDiv.textContent = 'Generating your image...';
+
+            loadingContainer.appendChild(loadingDiv);
+            chatMessages.appendChild(loadingContainer);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            return loadingContainer;
+        }
+
+        function addImageMessage(imageBlob, prompt) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message bot-message';
+
+            const container = document.createElement('div');
+            container.className = 'generated-image-container';
+
+            const img = document.createElement('img');
+            img.className = 'generated-image';
+            img.src = URL.createObjectURL(imageBlob);
+            img.alt = prompt;
+
+            img.addEventListener('click', () => {
+                modalImage.src = img.src;
+                modal.style.display = 'flex';
+            });
+
+            container.appendChild(img);
+            messageDiv.innerHTML = `Generated image for: "${prompt}"<br>`;
+            messageDiv.appendChild(container);
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        async function generateImage(prompt) {
+            const response = await fetch(MODEL_URL, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${API_KEY}`,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ inputs: prompt }),
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const blob = await response.blob();
+            if (blob.type.startsWith('image')) {
+                return blob;
+            } else {
+                throw new Error('Response is not a valid image blob.');
+            }
+        }
+
+        async function handleSend() {
+            if (isGenerating) return;
+            const prompt = userInput.value.trim();
+            if (!prompt) return;
+
+            isGenerating = true;
+            sendButton.disabled = true;
+
+            addMessage(prompt, true);
+            userInput.value = '';
+            const loadingDiv = addLoadingMessage();
+
+            try {
+                const imageBlob = await generateImage(prompt);
+                loadingDiv.remove();
+                addImageMessage(imageBlob, prompt);
+            } catch (error) {
+                loadingDiv.remove();
+                addMessage('Sorry, there was an error generating your image. Please try again.', false);
+                console.error('Error:', error);
+            } finally {
+                isGenerating = false;
+                sendButton.disabled = false;
+            }
+        }
+
+        sendButton.addEventListener('click', handleSend);
+        userInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') handleSend();
+        });
+
+        modalClose.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
